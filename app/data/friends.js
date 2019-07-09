@@ -1,8 +1,8 @@
 var person = [
     {
-        name: "Adam Bluce",
-        photo:"url",
-        answers:[1,1,1,1,1,1,1,1,1,1]
+        name: "Jack Sparrow",
+        url:"https://www.capecod.com/wp-content/uploads/sparrow-475x356.jpg",
+        answers:["1","1","1","1","1","1","1","1","1","1"]
     }
 ];
 
