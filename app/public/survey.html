@@ -346,13 +346,35 @@
                 </p>
             </div>
         </footer>
+
+        <div class="modal fade" id="matchedModal" tabindex="-1" role="dialog" aria-labelledby="matchedModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="matchedModalLabel">Best Match For You</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <h2 id="matchedName">Name</h2>
+                        <img src="#" id="matchedPhoto" width="300">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+              
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
     <script type="text/JavaScript">
         $("#submit").on("click", function(event) {
@@ -381,11 +403,29 @@
 
             function post(personData) {
                 $.post("/api/friends", personData,
-                function(personData) {
+                function(element) {
                     $.ajax({ url: "/api/friends", method: "GET" }).then(function(data) {
-                        console.log(data);
+                        var min = 100;
+                        var index = 0;
+
+                        for (var i=0; i<data.length-1; i++) {
+                            var sum = calcMatch(personData, data[i]);
+                            if (min > sum) {
+                                min = sum;
+                                index = i;
+                            }
+                        }
+                        $("#matchedName").text(data[index].name);
+                        $("#matchedPhoto").attr("src", data[index].url);
+                        $("#matchedModal").modal("show");
                     });
                 });
+            }
+            function calcMatch(x, y) {
+                var sum = 0;
+                for (var i=0; i<10; i++)
+                    sum += Math.abs(parseInt(x.answers[i]) - parseInt(y.answers[i]));
+                return sum;
             }
         });
     </script>
